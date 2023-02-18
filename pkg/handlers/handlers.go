@@ -18,7 +18,6 @@ type Repository struct {
 	App *config.AppConfig
 }
 
-
 // creates a new repository
 func NewRepo(a *config.AppConfig) *Repository {
 	return &Repository{
@@ -33,23 +32,24 @@ func NewHandlers(r *Repository) {
 
 // Home is the home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	// n, err := fmt.Fprintf(w, "Home page")
+	remoteIP := r.RemoteAddr
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	m.App.Session.Put(r.Context(), "remote_ip", remoteIP)
 
-	// fmt.Println(fmt.Sprintf("bytes written %d ", n))
 	render.RenderTemplate(w, "home.page.html", &models.TemplateData{})
 
 }
 
 // About is the about page handler
 func (m *Repository) About(w http.ResponseWriter, h *http.Request) {
-	// sum, _ := AddValues(2, 2)
-	// fmt.Fprintf(w, fmt.Sprintf("total sum %d", sum))
+	
 	stringMap := make(map[string]string)
 	stringMap["test"] = "Hello"
+
+	remoteIP := m.App.Session.GetString(h.Context(),"remote_ip")
+
+	stringMap["remote_ip"] = remoteIP
+
 	render.RenderTemplate(w, "about.page.html", &models.TemplateData{
 		StringMap: stringMap,
 	})

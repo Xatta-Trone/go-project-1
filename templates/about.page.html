@@ -6,5 +6,6 @@
 <h1>About page</h1>
 
 <p>template data {{ index .StringMap "test" }}</p>
+<p>IP {{ if ne (index .StringMap "remote_ip") "" }} {{index .StringMap "remote_ip"}} {{else}} Unknown <a href="/">visit home to set</a> {{end}}</p>
 
 {{end }}
