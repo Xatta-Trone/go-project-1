@@ -10,13 +10,13 @@ import (
 	"github.com/xatta-trone/go-project-1/pkg/render"
 )
 
-const PORT = "3000"
+const PORT = "localhost:3000"
 
 func main() {
 	var app config.AppConfig
 
-	// template cache 
-	tc,err := render.CreateTemplateCache()
+	// template cache
+	tc, err := render.CreateTemplateCache()
 
 	if err != nil {
 		log.Fatal("Can not create template cache")
@@ -30,13 +30,16 @@ func main() {
 	handlers.NewHandlers(repo)
 	render.NewTemplate(&app)
 
-
-
-	http.HandleFunc("/", handlers.Repo.Home)
-	http.HandleFunc("/about", handlers.Repo.About)
-	http.HandleFunc("/divide", handlers.Divide)
-
 	fmt.Println(fmt.Sprintf("Starting application on port %s", PORT))
 
-	http.ListenAndServe(fmt.Sprintf("localhost:%s", PORT), nil)
+	srv := &http.Server{
+		Addr:    PORT,
+		Handler: routes(&app),
+	}
+
+	err = srv.ListenAndServe()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
