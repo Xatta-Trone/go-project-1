@@ -20,5 +20,8 @@ func routes(app *config.AppConfig) http.Handler {
 	chi.Get("/", handlers.Repo.Home)
 	chi.Get("/about", handlers.Repo.About)
 
+	// static files 
+	fileServer := http.FileServer(http.Dir("./static/"))
+	chi.Handle("/static/*",http.StripPrefix("/static",fileServer))
 	return chi
 }
